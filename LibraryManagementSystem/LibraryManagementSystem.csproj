@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon />
+    <StartupObject>LibraryManagementSystem.Program</StartupObject>
+    <RootNamespace>LibraryManagementSystem</RootNamespace>
+    <AssemblyName>LibraryManagementSystem</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SQLite Database Driver -->
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <!-- Excel Export -->
+    <PackageReference Include="ClosedXML" Version="0.102.3" />
+    <!-- PDF Export -->
+    <PackageReference Include="QuestPDF" Version="2024.3.0" />
+    <!-- Charts -->
+    <PackageReference Include="ScottPlot.WinForms" Version="5.0.39" />
+  </ItemGroup>
+
+</Project>

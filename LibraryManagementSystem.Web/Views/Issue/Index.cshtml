@@ -1,0 +1,48 @@
+@{
+    Layout = "_Layout";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="padding: 0.85rem; background: @((bool)(TempData["Success"] ?? false) ? "#E8F5E9" : "#FFEBEE"); color: @((bool)(TempData["Success"] ?? false) ? "#2E7D32" : "#C62828"); border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="action-card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-bottom: 1rem;">📤 Issue Book to Member</h3>
+    <form method="post" action="@Url.Action("Submit", "Issue")">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-weight: 700; margin-bottom: 0.4rem;">Select Available Book</label>
+            <select name="bookId" class="form-control" required style="width: 100%;">
+                <option value="">-- Choose Book --</option>
+                @foreach (var b in ViewBag.Books)
+                {
+                    <option value="@b.BookID">@b.Title (Available: @b.AvailableCopies copies)</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 700; margin-bottom: 0.4rem;">Select Registered Member</label>
+            <select name="memberId" class="form-control" required style="width: 100%;">
+                <option value="">-- Choose Member --</option>
+                @foreach (var m in ViewBag.Members)
+                {
+                    <option value="@m.MemberID">@m.Name (@m.Email)</option>
+                }
+            </select>
+        </div>
+
+        <div style="background: var(--accent-color); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.85rem;">
+            📌 <strong>Loan Policy Note:</strong>
+            <ul style="margin-left: 1.25rem; margin-top: 0.4rem;">
+                <li>Standard return period is 14 days.</li>
+                <li>Members are limited to 3 active books.</li>
+                <li>Overdue returns incur a fine of ₹10 per day.</li>
+            </ul>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">Issue Book Now</button>
+    </form>
+</div>

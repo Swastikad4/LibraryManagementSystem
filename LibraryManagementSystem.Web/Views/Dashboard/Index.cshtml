@@ -1,0 +1,106 @@
+@{
+    Layout = "_Layout";
+}
+
+<div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">Welcome back, @ViewBag.FullName!</h2>
+    <p style="color: var(--text-secondary); font-size: 0.95rem;">Here is the current overview of your library system.</p>
+</div>
+
+<!-- Stat Cards Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Total Books</div>
+            <div class="stat-value">@ViewBag.TotalBooks</div>
+        </div>
+        <div class="stat-icon icon-red">📚</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Available Books</div>
+            <div class="stat-value">@ViewBag.AvailableBooks</div>
+        </div>
+        <div class="stat-icon icon-green">📗</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Borrowed Books</div>
+            <div class="stat-value">@ViewBag.BorrowedBooks</div>
+        </div>
+        <div class="stat-icon icon-yellow">📕</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Total Members</div>
+            <div class="stat-value">@ViewBag.TotalMembers</div>
+        </div>
+        <div class="stat-icon icon-purple">👥</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Due Today</div>
+            <div class="stat-value">@ViewBag.DueToday</div>
+        </div>
+        <div class="stat-icon icon-orange">📅</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Overdue Books</div>
+            <div class="stat-value">@ViewBag.OverdueBooks</div>
+        </div>
+        <div class="stat-icon icon-red">⏰</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Total Magazines</div>
+            <div class="stat-value">@ViewBag.TotalMagazines</div>
+        </div>
+        <div class="stat-icon icon-blue">📰</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Available Magazines</div>
+            <div class="stat-value">@ViewBag.AvailableMagazines</div>
+        </div>
+        <div class="stat-icon icon-green">📰</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Total Newspapers</div>
+            <div class="stat-value">@ViewBag.TotalNewspapers</div>
+        </div>
+        <div class="stat-icon icon-purple">🗞️</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-title">Available Newspapers</div>
+            <div class="stat-value">@ViewBag.AvailableNewspapers</div>
+        </div>
+        <div class="stat-icon icon-green">🗞️</div>
+    </div>
+</div>
+
+<!-- Quick Action Cards Grid -->
+<div class="actions-grid">
+    <div class="action-card">
+        <h3 class="icon-blue">📖 Books Collection</h3>
+        <p>View, edit, and manage the main library catalog.</p>
+        <a href="@Url.Action("Index", "Books")" class="btn-primary">Manage Books ></a>
+    </div>
+
+    <div class="action-card">
+        <h3 class="icon-green">⏳ Borrow Records</h3>
+        <p>Track book issues, returns, and calculate active fine balances.</p>
+        <a href="@Url.Action("Index", "Return")" class="btn-primary">Manage Record ></a>
+    </div>
+</div>

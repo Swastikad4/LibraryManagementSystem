@@ -1,0 +1,160 @@
+@model List<LibraryManagementSystem.Web.Models.Newspaper>
+@{
+    Layout = "_Layout";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="padding: 0.85rem; background: @((bool)(TempData["Success"] ?? false) ? "#E8F5E9" : "#FFEBEE"); color: @((bool)(TempData["Success"] ?? false) ? "#2E7D32" : "#C62828"); border-radius: 8px; margin-bottom: 1rem; font-weight: 600;">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <button class="btn-primary" onclick="openAddModal()">➕ Add New Newspaper</button>
+
+        <form method="get" action="@Url.Action("Index", "Newspapers")" class="search-box">
+            <input type="text" name="search" class="form-control" placeholder="Search by title, publisher..." value="@ViewBag.CurrentSearch" />
+            <select name="publisher" class="form-control" onchange="this.form.submit()">
+                <option value="All">All Publishers</option>
+                @foreach (var pub in ViewBag.Publishers)
+                {
+                    <option value="@pub" selected="@(ViewBag.CurrentPublisher == pub)">@pub</option>
+                }
+            </select>
+            <select name="status" class="form-control" onchange="this.form.submit()">
+                <option value="All">All Status</option>
+                <option value="Available" selected="@(ViewBag.CurrentStatus == "Available")">Available</option>
+                <option value="Issued" selected="@(ViewBag.CurrentStatus == "Issued")">Issued</option>
+            </select>
+            <button type="submit" class="btn-secondary">Search</button>
+            <a href="@Url.Action("Index", "Newspapers")" class="btn-secondary">Reset</a>
+        </form>
+    </div>
+
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Publisher</th>
+                <th>Published Date</th>
+                <th>Language</th>
+                <th>Edition</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var news in Model)
+            {
+                <tr>
+                    <td><strong>@news.Title</strong></td>
+                    <td>@news.Publisher</td>
+                    <td>@news.PublishedDate.ToString("dd-MM-yyyy")</td>
+                    <td>@news.Language</td>
+                    <td>@news.Edition</td>
+                    <td>
+                        <span class="badge @(news.IsAvailable ? "badge-available" : "badge-borrowed")">@news.Status</span>
+                    </td>
+                    <td>
+                        <button class="btn-secondary btn-sm" onclick='openEditModal(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(news)))'>Edit</button>
+                        <form method="post" action="@Url.Action("Delete", "Newspapers")" style="display:inline;" onsubmit="return confirm('Delete @news.Title?')">
+                            <input type="hidden" name="id" value="@news.Id" />
+                            <button type="submit" class="btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Dialog for Add/Edit -->
+<div class="modal-overlay" id="newspaperModal">
+    <div class="modal-card">
+        <h3 id="modalTitle" style="margin-bottom: 1rem;">Add New Newspaper</h3>
+        <form method="post" action="@Url.Action("Save", "Newspapers")">
+            <input type="hidden" id="newspaperId" name="Id" value="0" />
+
+            <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label>Newspaper Title</label>
+                <input type="text" id="title" name="Title" class="form-control" required style="width:100%;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
+                <div>
+                    <label>Publisher</label>
+                    <input type="text" id="publisher" name="Publisher" class="form-control" required style="width:100%;" />
+                </div>
+                <div>
+                    <label>Published Date</label>
+                    <input type="date" id="publishedDate" name="PublishedDate" class="form-control" required style="width:100%;" />
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
+                <div>
+                    <label>Language</label>
+                    <input type="text" id="language" name="Language" class="form-control" required style="width:100%;" />
+                </div>
+                <div>
+                    <label>Edition</label>
+                    <input type="text" id="edition" name="Edition" class="form-control" required style="width:100%;" />
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label>Status</label>
+                <select id="status" name="Status" class="form-control" required style="width:100%;">
+                    <option value="Available">Available</option>
+                    <option value="Issued">Issued</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label>Description</label>
+                <textarea id="description" name="Description" class="form-control" rows="3" style="width:100%;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Save Newspaper</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').innerText = 'Add New Newspaper';
+        document.getElementById('newspaperId').value = 0;
+        document.getElementById('title').value = '';
+        document.getElementById('publisher').value = '';
+        document.getElementById('publishedDate').value = '';
+        document.getElementById('language').value = 'English';
+        document.getElementById('edition').value = 'Daily';
+        document.getElementById('status').value = 'Available';
+        document.getElementById('description').value = '';
+        document.getElementById('newspaperModal').style.display = 'flex';
+    }
+
+    function openEditModal(news) {
+        document.getElementById('modalTitle').innerText = 'Edit Newspaper';
+        document.getElementById('newspaperId').value = news.Id;
+        document.getElementById('title').value = news.Title;
+        document.getElementById('publisher').value = news.Publisher;
+        document.getElementById('publishedDate').value = news.PublishedDate.toString('yyyy-MM-dd');
+        document.getElementById('language').value = news.Language;
+        document.getElementById('edition').value = news.Edition;
+        document.getElementById('status').value = news.Status;
+        document.getElementById('description').value = news.Description;
+        document.getElementById('newspaperModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('newspaperModal').style.display = 'none';
+    }
+</script>
+}

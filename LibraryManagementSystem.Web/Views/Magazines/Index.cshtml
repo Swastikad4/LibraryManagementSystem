@@ -1,0 +1,160 @@
+@model List<LibraryManagementSystem.Web.Models.Magazine>
+@{
+    Layout = "_Layout";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="padding: 0.85rem; background: @((bool)(TempData["Success"] ?? false) ? "#E8F5E9" : "#FFEBEE"); color: @((bool)(TempData["Success"] ?? false) ? "#2E7D32" : "#C62828"); border-radius: 8px; margin-bottom: 1rem; font-weight: 600;">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <button class="btn-primary" onclick="openAddModal()">➕ Add New Magazine</button>
+
+        <form method="get" action="@Url.Action("Index", "Magazines")" class="search-box">
+            <input type="text" name="search" class="form-control" placeholder="Search by title, publisher..." value="@ViewBag.CurrentSearch" />
+            <select name="publisher" class="form-control" onchange="this.form.submit()">
+                <option value="All">All Publishers</option>
+                @foreach (var pub in ViewBag.Publishers)
+                {
+                    <option value="@pub" selected="@(ViewBag.CurrentPublisher == pub)">@pub</option>
+                }
+            </select>
+            <select name="status" class="form-control" onchange="this.form.submit()">
+                <option value="All">All Status</option>
+                <option value="Available" selected="@(ViewBag.CurrentStatus == "Available")">Available</option>
+                <option value="Issued" selected="@(ViewBag.CurrentStatus == "Issued")">Issued</option>
+            </select>
+            <button type="submit" class="btn-secondary">Search</button>
+            <a href="@Url.Action("Index", "Magazines")" class="btn-secondary">Reset</a>
+        </form>
+    </div>
+
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Publisher</th>
+                <th>Issue Date</th>
+                <th>Language</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var mag in Model)
+            {
+                <tr>
+                    <td><strong>@mag.Title</strong></td>
+                    <td>@mag.Publisher</td>
+                    <td>@mag.IssueDate.ToString("dd-MM-yyyy")</td>
+                    <td>@mag.Language</td>
+                    <td>@mag.Category</td>
+                    <td>
+                        <span class="badge @(mag.IsAvailable ? "badge-available" : "badge-borrowed")">@mag.Status</span>
+                    </td>
+                    <td>
+                        <button class="btn-secondary btn-sm" onclick='openEditModal(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(mag)))'>Edit</button>
+                        <form method="post" action="@Url.Action("Delete", "Magazines")" style="display:inline;" onsubmit="return confirm('Delete @mag.Title?')">
+                            <input type="hidden" name="id" value="@mag.Id" />
+                            <button type="submit" class="btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Dialog for Add/Edit -->
+<div class="modal-overlay" id="magazineModal">
+    <div class="modal-card">
+        <h3 id="modalTitle" style="margin-bottom: 1rem;">Add New Magazine</h3>
+        <form method="post" action="@Url.Action("Save", "Magazines")">
+            <input type="hidden" id="magazineId" name="Id" value="0" />
+
+            <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label>Magazine Title</label>
+                <input type="text" id="title" name="Title" class="form-control" required style="width:100%;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
+                <div>
+                    <label>Publisher</label>
+                    <input type="text" id="publisher" name="Publisher" class="form-control" required style="width:100%;" />
+                </div>
+                <div>
+                    <label>Issue Date</label>
+                    <input type="date" id="issueDate" name="IssueDate" class="form-control" required style="width:100%;" />
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem;">
+                <div>
+                    <label>Language</label>
+                    <input type="text" id="language" name="Language" class="form-control" required style="width:100%;" />
+                </div>
+                <div>
+                    <label>Category</label>
+                    <input type="text" id="category" name="Category" class="form-control" required style="width:100%;" />
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label>Status</label>
+                <select id="status" name="Status" class="form-control" required style="width:100%;">
+                    <option value="Available">Available</option>
+                    <option value="Issued">Issued</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label>Description</label>
+                <textarea id="description" name="Description" class="form-control" rows="3" style="width:100%;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Save Magazine</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').innerText = 'Add New Magazine';
+        document.getElementById('magazineId').value = 0;
+        document.getElementById('title').value = '';
+        document.getElementById('publisher').value = '';
+        document.getElementById('issueDate').value = '';
+        document.getElementById('language').value = 'English';
+        document.getElementById('category').value = '';
+        document.getElementById('status').value = 'Available';
+        document.getElementById('description').value = '';
+        document.getElementById('magazineModal').style.display = 'flex';
+    }
+
+    function openEditModal(mag) {
+        document.getElementById('modalTitle').innerText = 'Edit Magazine';
+        document.getElementById('magazineId').value = mag.Id;
+        document.getElementById('title').value = mag.Title;
+        document.getElementById('publisher').value = mag.Publisher;
+        document.getElementById('issueDate').value = mag.IssueDate.toString('yyyy-MM-dd');
+        document.getElementById('language').value = mag.Language;
+        document.getElementById('category').value = mag.Category;
+        document.getElementById('status').value = mag.Status;
+        document.getElementById('description').value = mag.Description;
+        document.getElementById('magazineModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('magazineModal').style.display = 'none';
+    }
+</script>
+}

@@ -1,0 +1,69 @@
+@model List<LibraryManagementSystem.Web.Models.IssuedBook>
+@{
+    Layout = "_Layout";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="padding: 0.85rem; background: @((bool)(TempData["Success"] ?? false) ? "#E8F5E9" : "#FFEBEE"); color: @((bool)(TempData["Success"] ?? false) ? "#2E7D32" : "#C62828"); border-radius: 8px; margin-bottom: 1rem; font-weight: 600;">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <h3>📥 Active Borrow Records</h3>
+    </div>
+
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Issue ID</th>
+                <th>Book Title</th>
+                <th>Member Name</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Late Days</th>
+                <th>Fine (₹10/day)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="8" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                        No active borrowed books right now.
+                    </td>
+                </tr>
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><code>#@item.IssueID</code></td>
+                    <td><strong>@item.BookTitle</strong></td>
+                    <td>@item.MemberName</td>
+                    <td>@item.IssueDate.ToString("dd-MM-yyyy")</td>
+                    <td>@item.DueDate.ToString("dd-MM-yyyy")</td>
+                    <td>
+                        @if (item.LateDays > 0)
+                        {
+                            <span class="badge badge-overdue">@item.LateDays days late</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-available">On time</span>
+                        }
+                    </td>
+                    <td><strong>₹@item.CalculatedFine.ToString("N2")</strong></td>
+                    <td>
+                        <form method="post" action="@Url.Action("Submit", "Return")" style="display:inline;" onsubmit="return confirm('Confirm return for @item.BookTitle?')">
+                            <input type="hidden" name="issueId" value="@item.IssueID" />
+                            <button type="submit" class="btn-primary btn-sm">Return Book</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

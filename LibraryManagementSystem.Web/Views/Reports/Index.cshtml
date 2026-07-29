@@ -1,0 +1,35 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="action-card" style="max-width: 700px; margin: 0 auto;">
+    <h3 style="margin-bottom: 1.5rem;">📋 Generate & Export System Reports</h3>
+
+    <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label style="display: block; font-weight: 700; margin-bottom: 0.4rem;">Choose Report Type</label>
+        <select id="reportTypeSelect" class="form-control" style="width: 100%;">
+            <option value="AvailableBooks">Available Books Catalog</option>
+            <option value="BorrowedBooks">Currently Borrowed Books</option>
+            <option value="OverdueBooks">Overdue Books & Fine Audit</option>
+            <option value="Members">Registered Members List</option>
+        </select>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button onclick="downloadReport('ExportExcel')" class="btn-primary" style="flex: 1; justify-content: center;">
+            📁 Export to Excel (.xlsx)
+        </button>
+        <button onclick="downloadReport('ExportPdf')" class="btn-primary" style="flex: 1; justify-content: center; background-color: var(--sidebar-bg);">
+            🖨️ Export to PDF (.pdf)
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function downloadReport(action) {
+        const type = document.getElementById('reportTypeSelect').value;
+        window.location.href = `/Reports/${action}?type=${type}`;
+    }
+</script>
+}

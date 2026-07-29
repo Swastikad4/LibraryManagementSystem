@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Library Management System</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    @{
+        bool isLoginPage = ViewData["Title"]?.ToString() == "Login";
+    }
+    @if (!isLoginPage)
+    {
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">📚</div>
+                <h2>LMS</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="@Url.Action("Index", "Dashboard")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="@Url.Action("Index", "Books")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Books" ? "active" : "")">
+                    <span>📚</span> Books Collection
+                </a>
+                <a href="@Url.Action("Index", "Magazines")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Magazines" ? "active" : "")">
+                    <span>📰</span> Magazines
+                </a>
+                <a href="@Url.Action("Index", "Newspapers")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Newspapers" ? "active" : "")">
+                    <span>🗞️</span> Newspapers
+                </a>
+                <a href="@Url.Action("Index", "Members")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Members" ? "active" : "")">
+                    <span>👥</span> Members Registry
+                </a>
+                <a href="@Url.Action("Index", "Issue")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Issue" ? "active" : "")">
+                    <span>📤</span> Issue Book
+                </a>
+                <a href="@Url.Action("Index", "Return")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Return" ? "active" : "")">
+                    <span>📥</span> Return Book
+                </a>
+                <a href="#" class="nav-item">
+                    <span>🔍</span> Global Search
+                </a>
+                <a href="@Url.Action("Index", "Reports")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")">
+                    <span>📋</span> Reports & Export
+                </a>
+                <a href="@Url.Action("Index", "Settings")" class="nav-item @(ViewData["ActivePage"]?.ToString() == "Settings" ? "active" : "")">
+                    <span>⚙️</span> Settings & Backup
+                </a>
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <span>🚪</span> Logout
+                </a>
+            </nav>
+            <div class="sidebar-user">
+                <div class="user-avatar">👤</div>
+                <div class="user-info">
+                    <div class="user-name">Administrator</div>
+                    <div class="user-email">admin@lms.com</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <h1 class="page-title">@ViewData["Title"]</h1>
+                <div class="nav-right">
+                    <span class="clock-badge" id="liveClock">@DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")</span>
+                    <button class="btn-theme-toggle" id="themeToggleBtn">🌙 Mode</button>
+                    <div class="user-dropdown">
+                        <button class="btn-user">Administrator ▼</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="content-body">
+                @RenderBody()
+            </main>
+            <!-- Footer -->
+            <footer class="app-footer">
+                © 2026 Library Management System. All rights reserved.
+            </footer>
+        </div>
+    </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
+
+    <script>
+        // Live Clock
+        const liveClock = document.getElementById('liveClock');
+        if (liveClock) {
+            setInterval(() => {
+                const now = new Date();
+                liveClock.innerText = now.toLocaleString();
+            }, 1000);
+        }
+
+        // Theme Toggle Script
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                themeBtn.innerText = next === 'dark' ? '☀️ Light' : '🌙 Dark';
+            });
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

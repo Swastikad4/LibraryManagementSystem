@@ -1,0 +1,27 @@
+@{
+    Layout = "_Layout";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="padding: 0.85rem; background: @((bool)(TempData["Success"] ?? false) ? "#E8F5E9" : "#FFEBEE"); color: @((bool)(TempData["Success"] ?? false) ? "#2E7D32" : "#C62828"); border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="actions-grid" style="max-width: 800px; margin: 0 auto;">
+    <div class="action-card">
+        <h3>💿 Backup Database</h3>
+        <p>Download a copy of the SQLite <code>library.db</code> database file for safe storage.</p>
+        <a href="@Url.Action("Backup", "Settings")" class="btn-primary">Download Backup (.db)</a>
+    </div>
+
+    <div class="action-card">
+        <h3>📂 Restore Database</h3>
+        <p>Upload a previously saved <code>.db</code> file to restore system records.</p>
+        <form method="post" action="@Url.Action("Restore", "Settings")" enctype="multipart/form-data">
+            <input type="file" name="dbFile" accept=".db" required class="form-control" style="margin-bottom: 1rem; width: 100%;" />
+            <button type="submit" class="btn-secondary" onclick="return confirm('Restoring will replace existing data. Proceed?')">Restore Database File</button>
+        </form>
+    </div>
+</div>
