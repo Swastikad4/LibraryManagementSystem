@@ -235,40 +235,6 @@ LibraryManagementSystem.Web/
 
 ---
 
-## 📸 Screenshots
-
-### 🔐 Login Page
-<!-- Screenshot Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x500/8E6A6A/FFFFFF?text=Login+Page" alt="Login Page" width="600" />
-</div>
-
-### 📊 Dashboard
-<!-- Screenshot Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x500/8E6A6A/FFFFFF?text=Dashboard" alt="Dashboard" width="600" />
-</div>
-
-### 📖 Book Management
-<!-- Screenshot Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x500/8E6A6A/FFFFFF?text=Book+Management" alt="Book Management" width="600" />
-</div>
-
-### 👥 Members
-<!-- Screenshot Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x500/8E6A6A/FFFFFF?text=Members+Management" alt="Members Management" width="600" />
-</div>
-
-### 📋 Reports
-<!-- Screenshot Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x500/8E6A6A/FFFFFF?text=Reports" alt="Reports" width="600" />
-</div>
-
----
-
 ## 🔮 Future Enhancements
 
 - [ ] **Barcode/QR Code Integration** - Scan books for quick checkout
